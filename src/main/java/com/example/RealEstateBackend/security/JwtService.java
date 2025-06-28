@@ -23,6 +23,9 @@ public class JwtService {
     
     @Value("${jwt.expiration:86400000}") // 24 hours by default
     private long jwtExpiration;
+    
+    @Value("${jwt.refreshExpirationMs:604800000}") // 7 days by default
+    private long refreshExpirationMs;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -36,12 +39,20 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+    
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateToken(userDetails, refreshExpirationMs);
+    }
 
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
+    }
+    
+    public String generateToken(UserDetails userDetails, long expiration) {
+        return buildToken(new HashMap<>(), userDetails, expiration);
     }
 
     private String buildToken(

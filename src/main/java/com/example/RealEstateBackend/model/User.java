@@ -1,16 +1,21 @@
 package com.example.RealEstateBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,15 +28,23 @@ public class User implements UserDetails {
     @Id
     private String id;
     
-    private String firstName;
-    private String lastName;
+    private String name;
     
     @Indexed(unique = true)
     private String email;
     
+    @JsonIgnore
     private String password;
+    
     private UserRole role;
-    private boolean enabled = false;
+    
+    private boolean enabled = true;
+    
+    @CreatedDate
+    private LocalDateTime createdAt;
+    
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -65,6 +78,20 @@ public class User implements UserDetails {
 
     public enum UserRole {
         USER,
-        ADMIN
+        ADMIN;
+        
+        public String getAuthority() {
+            return "ROLE_" + this.name();
+        }
+    }
+    
+    // Helper method to get full name (for backward compatibility)
+    public String getFullName() {
+        return name;
+    }
+    
+    // Helper method to set full name (for backward compatibility)
+    public void setFullName(String fullName) {
+        this.name = fullName;
     }
 }

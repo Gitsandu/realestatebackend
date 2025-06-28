@@ -11,11 +11,18 @@ spring:
       port: 27017
       database: real_estate_db
       auto-index-creation: true
+      auto-create-indexes: true
+    
+  # Enable MongoDB auditing
+  mongodb:
+    auditing:
+      enabled: true
 
   # JWT Configuration
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000 # 24 hours in milliseconds
+  refresh-expiration-ms: 604800000 # 7 days in milliseconds
 
 # Logging configuration
 logging:
