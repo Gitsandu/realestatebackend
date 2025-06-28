@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: real-estate-backend
+  
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: real_estate_db
+      auto-index-creation: true
+
+  # JWT Configuration
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000 # 24 hours in milliseconds
+
+# Logging configuration
+logging:
+  level:
+    org.springframework.security: INFO
+    com.example.RealEstateBackend: DEBUG
+
+# OpenAPI (Swagger) Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
