@@ -1,15 +1,14 @@
-server:
-  port: 8080
-
+# Common configuration for all profiles
 spring:
+  profiles:
+    active: dev
   application:
     name: real-estate-backend
-  
   data:
     mongodb:
       host: localhost
       port: 27017
-      database: real_estate_db
+      database: real_estate_dev_db
       auto-index-creation: true
       auto-create-indexes: true
     
@@ -18,11 +17,14 @@ spring:
     auditing:
       enabled: true
 
-  # JWT Configuration
+# JWT Configuration
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000 # 24 hours in milliseconds
-  refresh-expiration-ms: 604800000 # 7 days in milliseconds
+  refreshExpirationMs: 604800000 # 7 days in milliseconds
+
+server:
+  port: 8080
 
 # Logging configuration
 logging:
@@ -38,3 +40,29 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
     tagsSorter: alpha
+
+---
+# Development profile
+spring:
+  config.activate.on-profile: dev
+  application:
+    name: real-estate-backend-dev
+  data:
+    mongodb:
+      database: real_estate_dev_db
+
+---
+# Production profile
+spring:
+  config.activate.on-profile: prod
+  application:
+    name: real-estate-backend-prod
+  data:
+    mongodb:
+      host: ${MONGODB_HOST:localhost}
+      port: ${MONGODB_PORT:27017}
+      database: ${MONGODB_DATABASE:real_estate_db}
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refreshExpirationMs: ${JWT_REFRESH_EXPIRATION_MS:604800000}
